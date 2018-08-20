@@ -22,8 +22,6 @@
 
 #include <memory>
 
-#include <ui/Gralloc1.h>
-
 #include <utils/Singleton.h>
 
 
@@ -31,30 +29,24 @@
 // when/if we get rid of gralloc, we should provide aliases or fix call sites.
 #include <hardware/gralloc.h>
 
+struct gralloc_module_t;
 
 namespace android {
 
 // ---------------------------------------------------------------------------
-
-namespace Gralloc2 {
-class Mapper;
-}
 
 class Rect;
 
 class GraphicBufferMapper : public Singleton<GraphicBufferMapper>
 {
 public:
-    static void preloadHal();
     static inline GraphicBufferMapper& get() { return getInstance(); }
 
     // The imported outHandle must be freed with freeBuffer when no longer
     // needed. rawHandle is owned by the caller.
-    status_t importBuffer(buffer_handle_t rawHandle,
-            buffer_handle_t* outHandle);
+    status_t importBuffer(buffer_handle_t handle);
 
-    // This is temporary and will be removed soon
-    status_t importBuffer(const GraphicBuffer* buffer);
+    status_t unregisterBuffer(buffer_handle_t handle);
 
     status_t freeBuffer(buffer_handle_t handle);
 
@@ -79,20 +71,10 @@ public:
 
     status_t unlockAsync(buffer_handle_t handle, int *fenceFd);
 
-    const Gralloc2::Mapper& getGrallocMapper() const
-    {
-        return *mMapper;
-    }
-
 private:
     friend class Singleton<GraphicBufferMapper>;
-
     GraphicBufferMapper();
-
-    const std::unique_ptr<const Gralloc2::Mapper> mMapper;
-
-    std::unique_ptr<Gralloc1::Loader> mLoader;
-    std::unique_ptr<Gralloc1::Device> mDevice;
+    gralloc_module_t const *mAllocMod;
 };
 
 // ---------------------------------------------------------------------------
