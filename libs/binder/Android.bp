@@ -79,7 +79,6 @@ cc_library {
     cflags: [
         "-Wall",
         "-Wextra",
-        "-Werror",
     ],
     product_variables: {
         binder32bit: {
