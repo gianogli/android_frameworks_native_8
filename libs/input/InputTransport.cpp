@@ -540,7 +540,7 @@ status_t InputConsumer::consume(InputEventFactoryInterface* factory,
             // Receive a fresh message.
             status_t result = mChannel->receiveMessage(&mMsg);
             if (result == 0) {
-                if ((mMsg.body.motion.action & AMOTION_EVENT_ACTION_MASK) == AMOTION_EVENT_ACTION_MOVE){
+                if ((mMsg.body.motion.action & AMOTION_EVENT_ACTION_MASK) == AMOTION_EVENT_ACTION_MOVE) {
                     mTouchMoveCounter++;
                 } else {
                     mTouchMoveCounter = 0;
